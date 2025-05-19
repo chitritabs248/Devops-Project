@@ -1,14 +1,15 @@
 import mongoose from "mongoose";
 
-export const dbConnection = () => {
-  mongoose
-    .connect(process.env.MONGO_URI, {
+export const dbConnection = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
       dbName: "RESERVATIONS",
-    })
-    .then(() => {
-      console.log("Connected to database!");
-    })
-    .catch((err) => {
-      console.log(`Some error occured while connecing to database: ${err}`);
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
     });
+    console.log("Connected to database!");
+  } catch (err) {
+    console.error(`Some error occurred while connecting to database: ${err}`);
+    process.exit(1); // Exit process on DB connection failure
+  }
 };
