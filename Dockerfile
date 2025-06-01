@@ -26,7 +26,7 @@ WORKDIR /app
 COPY --from=backend-builder /app/backend ./backend
 
 # Copy frontend build files (static files)
-COPY --from=frontend-builder /app/frontend/build ./frontend/build
+COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
 
 # Expose port your backend listens on, e.g., 4000
 EXPOSE 4000
