@@ -1,35 +1,21 @@
-# Stage 1: Build frontend
-FROM node:20 as frontend-builder
-WORKDIR /app/frontend
+# Use Node.js image
+FROM node:20
 
-COPY frontend/package*.json ./
-RUN npm install
-
-COPY frontend/ ./
-RUN npm run build
-
-# Stage 2: Build backend
-FROM node:20 as backend-builder
-WORKDIR /app/backend
-
-COPY backend/package*.json ./
-RUN npm install
-
-COPY backend/ ./
-# No build step since backend doesn't have "build" script
-
-# Stage 3: Final image
-FROM node:20-alpine
+# Set working directory
 WORKDIR /app
 
-# Copy backend code
-COPY --from=backend-builder /app/backend ./backend
+# Copy backend files
+COPY ./backend/package*.json ./
+RUN npm install
 
-# Copy frontend build files (static files)
-COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
+# Copy rest of the backend code
+COPY ./backend .
 
-# Expose port your backend listens on, e.g., 4000
+# If dist folder is in backend, copy it too
+COPY ./backend/dist ./dist
+
+# Expose backend port
 EXPOSE 4000
 
-# Start backend server (adjust path as needed)
-CMD ["node", "backend/server.js"]
+# Start the server
+CMD ["node", "server.js"]
