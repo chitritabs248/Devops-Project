@@ -1,20 +1,20 @@
+import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
-import app from "./app.js";
+import app from "./app.js"; // assuming app.js exports your Express app
 
-// Setup for __dirname in ES module
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Serve React build folder (frontend) — change path as needed
-app.use(express.static(path.join(__dirname, "frontend/build")));
+const PORT = process.env.PORT || 4000;
 
+// ✅ Serve frontend build (important for Docker)
+app.use(express.static(path.join(__dirname, "dist")));
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "frontend/build", "index.html"));
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
-// Start server
-const PORT = process.env.PORT || 4000;
+// ✅ Start server
 app.listen(PORT, () => {
   console.log(`SERVER HAS STARTED AT PORT ${PORT}`);
 });
